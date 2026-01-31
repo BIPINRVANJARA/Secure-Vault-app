@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:secure_vault/services/auth_service.dart';
 import 'package:secure_vault/services/file_service.dart';
+import 'package:secure_vault/services/storage_service.dart';
 import 'package:secure_vault/features/files/models/file_model.dart';
 import 'package:secure_vault/features/files/models/folder_node.dart';
 import 'package:secure_vault/features/files/widgets/file_tile.dart';
@@ -23,6 +24,7 @@ class FilesScreen extends StatefulWidget {
 class _FilesScreenState extends State<FilesScreen> {
   final _authService = AuthService();
   final _fileService = FileService();
+  final _storageService = StorageService();
   final _imagePicker = ImagePicker();
   
   List<FileModel> _files = [];
@@ -256,6 +258,61 @@ class _FilesScreenState extends State<FilesScreen> {
     }
   }
 
+  void _showImagePreview(FileModel file) {
+    if (file.category != 'image') return;
+
+    final imageUrl = _storageService.getPublicUrl(file.bucketPath);
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.zero,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            InteractiveViewer(
+              minScale: 0.5,
+              maxScale: 4.0,
+              child: Image.network(
+                imageUrl,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) => Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.broken_image, color: Colors.white, size: 48),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Failed to load image',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              top: 40,
+              right: 20,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showUploadOptions() {
     showModalBottomSheet(
       context: context,
@@ -380,6 +437,7 @@ class _FilesScreenState extends State<FilesScreen> {
                                   onToggleFolder: _toggleFolder,
                                   onDownload: _downloadFile,
                                   onDelete: _deleteFile,
+                                  onFileTap: _showImagePreview,
                                 ),
                               ),
                       ),

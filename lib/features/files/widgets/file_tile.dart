@@ -5,12 +5,14 @@ class FileTile extends StatelessWidget {
   final FileModel file;
   final VoidCallback onDownload;
   final VoidCallback onDelete;
+  final VoidCallback? onTap;
 
   const FileTile({
     super.key,
     required this.file,
     required this.onDownload,
     required this.onDelete,
+    this.onTap,
   });
 
   IconData _getCategoryIcon() {
@@ -56,6 +58,7 @@ class FileTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
+        onTap: onTap,
         leading: Container(
           width: 48,
           height: 48,

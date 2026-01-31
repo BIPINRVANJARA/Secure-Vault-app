@@ -8,6 +8,7 @@ class FolderTreeWidget extends StatelessWidget {
   final Function(String) onToggleFolder;
   final Function(FileModel) onDownload;
   final Function(FileModel) onDelete;
+  final Function(FileModel)? onFileTap;
   final int depth;
 
   const FolderTreeWidget({
@@ -16,6 +17,7 @@ class FolderTreeWidget extends StatelessWidget {
     required this.onToggleFolder,
     required this.onDownload,
     required this.onDelete,
+    this.onFileTap,
     this.depth = 0,
   });
 
@@ -43,6 +45,7 @@ class FolderTreeWidget extends StatelessWidget {
             onToggleFolder: onToggleFolder,
             onDownload: onDownload,
             onDelete: onDelete,
+            onFileTap: onFileTap,
             depth: depth + 1,
           ),
         );
@@ -61,6 +64,7 @@ class FolderTreeWidget extends StatelessWidget {
             file: file,
             onDownload: () => onDownload(file),
             onDelete: () => onDelete(file),
+            onTap: onFileTap != null ? () => onFileTap!(file) : null,
           ),
         ),
       );
