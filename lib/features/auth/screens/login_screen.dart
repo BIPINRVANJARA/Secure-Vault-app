@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:secure_vault/services/auth_service.dart';
 import 'package:secure_vault/features/files/screens/files_screen.dart';
 import 'package:secure_vault/features/auth/screens/signup_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -172,6 +173,42 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Text('Sign Up'),
                       ),
                     ],
+                  ),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Developer credit
+                  GestureDetector(
+                    onTap: () async {
+                      final uri = Uri.parse('https://www.instagram.com/cyberidfc/?hl=en');
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Made by ',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Colors.grey,
+                              ),
+                        ),
+                        Icon(
+                          Icons.camera_alt,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '@cyberidfc',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
